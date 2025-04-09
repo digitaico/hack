@@ -39,18 +39,18 @@ class SpeakerDeauthorizer:
         else:
             device_type_name =f"devices with major class ID {major_device_class}"
 
-        print("Iniciando Deauth {device_type_name}...")
+        print(f"Iniciando Deauth {device_type_name}...")
         devices = self.scanner.scan_for_devices(major_device_class=major_device_class)
         
         if not devices:
-            print("No se encontraron {device_type_name} ofensores")
+            print(f"No se encontraron {device_type_name} ofensores")
             return
 
-        print("\n{device_type_name} encontrados:")
+        print(f"\n{device_type_name} encontrados:")
         for device_mac in devices:
             print(f"- {device_mac}")
 
-        print("\nIniciando Deauth de {device_type_name} ofensores...")
+        print(f"\nIniciando Deauth de {device_type_name} ofensores...")
         for device_mac in devices:
             print(f"\nIntentando Deauth {device_type_name} {device_mac}...")
             self.deauther.deauth_device(device_mac)
