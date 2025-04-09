@@ -34,13 +34,13 @@ class SpeakerDeauthorizer:
         device_type_name = ""
         if major_device_class == 2:
             device_type_name = "Mobile Phones"
-        elif: major_device_class == 4:
-            major_device_class = "Bluetooth Speakers"
+        elif major_device_class == 4:
+            device_type_name = "Bluetooth Speakers"
         else:
             device_type_name =f"devices with major class ID {major_device_class}"
 
         print("Iniciando Deauth {device_type_name}...")
-        devices = self.scanner.scan_for_devices(major_device_class= major_device_class)
+        devices = self.scanner.scan_for_devices(major_device_class=major_device_class)
         
         if not devices:
             print("No se encontraron {device_type_name} ofensores")
@@ -70,7 +70,7 @@ class SpeakerDeauthorizerRunner:
         scanner = Scanner(adapter=adapter_id)
         deauther = Deauther(adapter=adapter_id)
         speaker_deautherizer = SpeakerDeauthorizer(scanner,deauther)
-        speaker_deautherizer.deauthorize_speakers(major_device_class)
+        speaker_deautherizer.deauthorize_devices(major_device_class)
 
 if __name__ == "__main__":
     SpeakerDeauthorizerRunner.run()
