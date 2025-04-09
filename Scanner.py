@@ -20,8 +20,8 @@ class Scanner:
             device_type_name = f"devices with major class 0x{major_device_class:02x}"
 
         try:
-            nearby_devices = bluetooth.discover_devices(duration=20, lookup_names=True, lookup_class=True, device_id=adapter)
-            print(f"Scaneando {device_type_name} usando adaptador {adapter}...")
+            nearby_devices = bluetooth.discover_devices(duration=20, lookup_names=True, lookup_class=True, device_id=self.adapter)
+            print(f"Scaneando {device_type_name} usando adaptador {self.adapter}...")
 
             for device_info in nearby_devices:
                 addr = device_info[0]
@@ -57,7 +57,7 @@ class Scanner:
                                 print(f"Encontre Parlante Bluetooth por nombre: '{brand}': {name} - {addr}")
                                 break # if found no need to continue loop through the brands list
                             else: # check si no es igual a marca
-                                for keyword in self.speaker_brands:
+                                for keyword in self.speaker_keywords:
                                     if keyword in device_class_lower:
                                         devices.append(addr)
                                         print(f"Encontre Parlante Bluetooth por keywords contiene '{keyword}': {name} - {addr}")
@@ -81,7 +81,7 @@ class Scanner:
                                 print(f"Encontre Parlante Bluetooth por nombre: '{brand}': {name} - {addr}")
                                 break # if found no need to continue loop through the brands list
                             else:
-                                for keyword in self.speaker_brands:
+                                for keyword in self.speaker_keywords:
                                     if keyword in device_class_lower:
                                         devices.append(addr)
                                         print(f"Encontre Parlante Bluetooth por keywords contiene '{keyword}': {name} - {addr}")
@@ -92,13 +92,13 @@ class Scanner:
                     print(f"Valor recibido como device class: '{device_class_str}'")
 
                 if not is_target_device:
-                    print(f"Encontre clase -no {device_type_name.rstrip('s')}: {name} -{addr} Class: '{device_class_str}'")
+                    print(f"Encontre clase NO {device_type_name.rstrip('s')}: {name} -{addr} Class: '{device_class_str}'")
 
         except bluetooth.BluetoothError as e:
             print(f"F**k! Ocurrio un error durante el scanneo Bluetooth: {e}")
             print("Porbablemente se requiera usar `root` privilegios. SUDO! mi negto!!")
             print("Revisa que Bluetooth este activado y que el adaptador este UP.")
 
-        print(f"Devices {devices}")
+
         return devices
 
